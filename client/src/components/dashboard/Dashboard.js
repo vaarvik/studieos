@@ -1,14 +1,20 @@
 import React, { Component } from "react";
-import Popular from "./Popular";
+import SelectedStudy from "./SelectedStudy";
 import Search from "./Search";
 
 class Dashboard extends Component {
   render() {
+    const showSelectedStudy = this.props.match.params.study_id ? (
+      <SelectedStudy
+        study={this.props}
+        pageId={this.props.match.params.study_id}
+      />
+    ) : null;
     return (
-      <div className="container">
-        <Search />
-        <Popular />
-      </div>
+      <React.Fragment>
+        <Search pageId={this.props.match.params.study_id} />
+        {showSelectedStudy}
+      </React.Fragment>
     );
   }
 }

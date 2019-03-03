@@ -1,15 +1,14 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 
-export default class StudySummary extends Component {
-  render() {
-    return (
-      <Link to={`/studies/${this.props.study.Id_soekerportal}`}>
-        <h5>{this.props.study.Laerestednavn}</h5>
-        <h4>{this.props.study.Undervisningssted}</h4>
-        <h3>{this.props.study.Studiumnavn}</h3>
-        <hr />
-      </Link>
-    );
-  }
-}
+const StudySummary = props => {
+  return (
+    <Link to={`/studies/${props.study.Id_soekerportal}`}>
+      <h3>{props.study.Studiumnavn}</h3>
+      <h4>{props.study.Laerestednavn}</h4>
+      <h5>{props.study.Undervisningssted}</h5>
+    </Link>
+  );
+};
+
+export default StudySummary;

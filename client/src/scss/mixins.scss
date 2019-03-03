@@ -1,0 +1,208 @@
+@mixin generate-grid($columns, $size: "") {
+  @for $i from 1 through $columns {
+    $width: calc(100% / (#{$columns} / #{$i}));
+    @if ($size == "") {
+      .col-#{$i}-#{$columns} {
+        width: $width;
+        display: inline-block;
+        vertical-align: top;
+        font-size: 0;
+        > * {
+          font-size: 16px;
+        }
+      }
+      .col-offset-#{$i}-#{$columns} {
+        margin-left: $width;
+      }
+    } @else {
+      .col-#{$size}-#{$i}-#{$columns} {
+        width: $width;
+        display: inline-block;
+        vertical-align: top;
+        font-size: 0;
+        > * {
+          font-size: 16px;
+        }
+      }
+      .col-#{$size}-offset-#{$i}-#{$columns} {
+        margin-left: $width;
+      }
+    }
+  }
+}
+
+// @function temp($color...) {
+//   $colors: "";
+//   @for $i from 1 through length($color) {
+//     @if ($i == length($color)) {
+//       $colors: $colors + "nth($color, #{$i})";
+//     } @else {
+//       $colors: $colors + "nth($color, #{$i}), ";
+//     }
+//   }
+//   @warn $colors;
+//   @return $colors;
+// }
+
+@mixin linear-overlay($color...) {
+  @for $i from 0 through 360 {
+    @if (length($color) == 1) {
+      .linear-overlay-#{$i} {
+        $direction: $i;
+        background: nth($color, 1); /* fallback for old browsers */
+      }
+    }
+    @if (length($color) == 2) {
+      .linear-overlay-#{$i} {
+        $direction: $i;
+        background: nth($color, 1); /* fallback for old browsers */
+        background: -webkit-linear-gradient(
+          #{$direction}deg,
+          nth($color, 1),
+          nth($color, 2)
+        );
+        background: linear-gradient(
+          #{$direction}deg,
+          nth($color, 1),
+          nth($color, 2)
+        );
+      }
+    }
+    @if (length($color) == 3) {
+      .linear-overlay-#{$i} {
+        $direction: $i;
+        background: nth($color, 1); /* fallback for old browsers */
+        background: -webkit-linear-gradient(
+          #{$direction}deg,
+          nth($color, 1),
+          nth($color, 2),
+          nth($color, 3)
+        );
+        background: linear-gradient(
+          #{$direction}deg,
+          nth($color, 1),
+          nth($color, 2),
+          nth($color, 3)
+        );
+      }
+    }
+    @if (length($color) == 4) {
+      .linear-overlay-#{$i} {
+        $direction: $i;
+        background: nth($color, 1); /* fallback for old browsers */
+        background: -webkit-linear-gradient(
+          #{$direction}deg,
+          nth($color, 1),
+          nth($color, 2),
+          nth($color, 3),
+          nth($color, 4)
+        );
+        background: linear-gradient(
+          #{$direction}deg,
+          nth($color, 1),
+          nth($color, 2),
+          nth($color, 3),
+          nth($color, 4)
+        );
+      }
+    }
+  }
+}
+
+@mixin radial-overlay-static($color...) {
+  @if (length($color) == 1) {
+    background: nth($color, 1); /* fallback for old browsers */
+  }
+  @if (length($color) == 2) {
+    background: nth($color, 1); /* fallback for old browsers */
+    background: -webkit-radial-gradient(circle, nth($color, 1), nth($color, 2));
+    background: radial-gradient(circle, nth($color, 1), nth($color, 2));
+  }
+  @if (length($color) == 3) {
+    background: nth($color, 1); /* fallback for old browsers */
+    background: -webkit-radial-gradient(
+      circle,
+      nth($color, 1),
+      nth($color, 2),
+      nth($color, 3)
+    );
+    background: radial-gradient(
+      circle,
+      nth($color, 1),
+      nth($color, 2),
+      nth($color, 3)
+    );
+  }
+  @if (length($color) == 4) {
+    background: nth($color, 1); /* fallback for old browsers */
+    background: -webkit-radial-gradient(
+      circle,
+      nth($color, 1),
+      nth($color, 2),
+      nth($color, 3),
+      nth($color, 4)
+    );
+    background: radial-gradient(
+      circle,
+      nth($color, 1),
+      nth($color, 2),
+      nth($color, 3),
+      nth($color, 4)
+    );
+  }
+}
+
+@mixin radial-overlay($color...) {
+  @if (length($color) == 1) {
+    .radial-overlay {
+      background: nth($color, 1); /* fallback for old browsers */
+    }
+  }
+  @if (length($color) == 2) {
+    .radial-overlay {
+      background: nth($color, 1); /* fallback for old browsers */
+      background: -webkit-radial-gradient(
+        circle,
+        nth($color, 1),
+        nth($color, 2)
+      );
+      background: radial-gradient(circle, nth($color, 1), nth($color, 2));
+    }
+  }
+  @if (length($color) == 3) {
+    .radial-overlay {
+      background: nth($color, 1); /* fallback for old browsers */
+      background: -webkit-radial-gradient(
+        circle,
+        nth($color, 1),
+        nth($color, 2),
+        nth($color, 3)
+      );
+      background: radial-gradient(
+        circle,
+        nth($color, 1),
+        nth($color, 2),
+        nth($color, 3)
+      );
+    }
+  }
+  @if (length($color) == 4) {
+    .radial-overlay {
+      background: nth($color, 1); /* fallback for old browsers */
+      background: -webkit-radial-gradient(
+        circle,
+        nth($color, 1),
+        nth($color, 2),
+        nth($color, 3),
+        nth($color, 4)
+      );
+      background: radial-gradient(
+        circle,
+        nth($color, 1),
+        nth($color, 2),
+        nth($color, 3),
+        nth($color, 4)
+      );
+    }
+  }
+}

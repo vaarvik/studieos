@@ -5,34 +5,89 @@ class RateStudy extends Component {
   state = {
     totalRating: this.props.study.currentRating / this.props.study.votes
   };
-  render() {
+  setRating = i => {
     const { study } = this.props;
-    console.log(study.currentRating, study.votes);
-    if (!this.state.totalRating) {
-      this.state.totalRating = <p>No rating</p>;
+    this.props.rating(study.currentRating, i, this.props.currentElement);
+    this.setState({
+      totalRating: this.props.study.currentRating / this.props.study.votes
+    });
+  };
+
+  hoverSiblings = e => {
+    for (let i = 0; i < e.target.id; i++) {
+      e.target.parentElement.children[i].classList.toggle("active");
+      e.target.parentElement.children[i].innerText = "";
     }
-    return (
-      <div className="rate_study">
-        <span
+    if (e.target.className != "rating-star active");
+    e.target.innerText = "";
+    e.target.parentElement.lastChild.classList.toggle("hide");
+    e.target.parentElement.lastChild.classList.toggle("z-back");
+    document.createElement("div");
+  };
+
+  zBack = e => {
+    e.target.classList.toggle("z-back");
+    console.log(window.getComputedStyle(e.target));
+  };
+
+  displayStar = () => {
+    var temp = [];
+    for (var i = 1; i <= 5; i++) {
+      let tempI = i;
+      temp.push(
+        <div
+          key={tempI}
+          id={tempI}
+          className="rating-star"
           onClick={() => {
-            this.props.rating(
-              study.currentRating,
-              1,
-              this.props.currentElement
-            );
-            this.setState({
-              totalRating:
-                this.props.study.currentRating / this.props.study.votes
-            });
+            this.setRating(tempI);
           }}
+          onMouseEnter={this.hoverSiblings}
+          onMouseLeave={this.hoverSiblings}
         >
-          ☆
-        </span>
-        <span>☆</span>
-        <span>☆</span>
-        <span>☆</span>
-        <span>☆</span>
-        <h4>Rating: {this.state.totalRating}</h4>
+          
+        </div>
+      );
+    }
+    return temp;
+  };
+
+  componentDidUpdate = (prevProps, prevState) => {
+    console.log("prevP", prevProps);
+    console.log("prevS", prevState);
+    if (prevState === this.state) {
+      this.setState({
+        totalRating: this.props.study.currentRating / this.props.study.votes
+      });
+    }
+    let ti = document.getElementById("rate-study");
+    console.log(window.getComputedStyle(ti));
+  };
+
+  componentDidMount = () => {};
+
+  render() {
+    const percentageRating = this.props.study.currentRating
+      ? (this.state.totalRating / 5) * 100
+      : 0;
+    const rating = !this.props.study.currentRating ? (
+      <span>Not Rated</span>
+    ) : (
+      <span>({this.state.totalRating.toFixed(2)})</span>
+    );
+
+    return (
+      <div className="rate-study" id="rate-study">
+        <div>
+          {this.displayStar()}
+          <div
+            className="star-color"
+            style={{ width: `${percentageRating}%` }}
+            onMouseEnter={this.zBack}
+            onMouseLeave={this.zBack}
+          />
+        </div>
+        {rating}
       </div>
     );
   }
@@ -51,10 +106,15 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch, score) => {
   return {
     rating: (current, score, id) => {
-      console.log(current);
+      let tempCurrent;
+      if (current) {
+        tempCurrent = current;
+      } else {
+        tempCurrent = 0;
+      }
       dispatch({
         type: "STUDY_RATED",
-        currentRating: current + score,
+        currentRating: tempCurrent + score,
         id
       });
     }

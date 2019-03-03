@@ -11,35 +11,6 @@ const {
   GraphQLNonNull
 } = graphql;
 
-// const Study = [
-//   {
-//     id: 1,
-//     name: "Innovasjon",
-//     schoolId: 1
-//   },
-//   {
-//     id: 2,
-//     name: "Helse",
-//     schoolId: 1
-//   },
-//   {
-//     id: 3,
-//     name: "Akvakultur",
-//     schoolId: 2
-//   }
-// ];
-
-// const School = [
-//   {
-//     id: 1,
-//     name: "Hiof"
-//   },
-//   {
-//     id: 2,
-//     name: "NTNU"
-//   }
-// ];
-
 const StudyType = new GraphQLObjectType({
   name: "Study",
   fields: () => ({
