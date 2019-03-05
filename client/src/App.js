@@ -15,7 +15,6 @@ class App extends Component {
             <Switch>
               <Route exact path="/" component={Dashboard} />
               <Route exact path="/studies/:study_id" component={Dashboard} />
-              <Route exact path="/map" component={Mape} />
             </Switch>
           </React.Fragment>
         </BrowserRouter>

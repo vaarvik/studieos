@@ -30,7 +30,7 @@ const mapStateToProps = (state, ownProps) => {
   let id = ownProps.study.match.params.study_id;
   return {
     study: state.study.find(study => {
-      return study.Id_soekerportal == id;
+      return study.Id_soekerportal === id;
     }),
     urlId: ownProps
   };

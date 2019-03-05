@@ -1,19 +1,15 @@
 import React, { Component } from "react";
-import { Map, Marker, Popup, TileLayer } from "react-leaflet";
+import { Map, Marker, TileLayer } from "react-leaflet";
 import { mapToken } from "../../data/tokens/tokens.js";
-import L from "leaflet";
 
-let map = null;
 class Mape extends Component {
   state = {
     position: [5.505, 10]
   };
   updateMap = () => {
-    const map = this.refs.map;
-    if (map) {
-      map.leafletElement.invalidateSize();
-    }
-    this.refs.mapContainer.classList.add("show");
+    const { map, mapContainer } = this.refs;
+    if (map) map.leafletElement.invalidateSize();
+    if (mapContainer) this.refs.mapContainer.classList.add("show");
   };
   render() {
     return (

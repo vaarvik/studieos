@@ -46,7 +46,14 @@ body,
     border: 1px solid #ddd;
     margin: 4% 0;
   }
-  ul {
+  .searchTag {
+    background: #{$whiteColor}05;
+    font-size: 0.8em;
+    display: inline-block;
+    padding: 2%;
+    margin: 2%;
+  }
+  .dropdown {
     overflow-y: scroll;
     height: 400px;
     background: $whiteColor;

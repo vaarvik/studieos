@@ -18,7 +18,7 @@ class RateStudy extends Component {
       e.target.parentElement.children[i].classList.toggle("active");
       e.target.parentElement.children[i].innerText = "";
     }
-    if (e.target.className != "rating-star active");
+    if (e.target.className !== "rating-star active");
     e.target.innerText = "";
     e.target.parentElement.lastChild.classList.toggle("hide");
     e.target.parentElement.lastChild.classList.toggle("z-back");
@@ -27,7 +27,6 @@ class RateStudy extends Component {
 
   zBack = e => {
     e.target.classList.toggle("z-back");
-    console.log(window.getComputedStyle(e.target));
   };
 
   displayStar = () => {
@@ -53,15 +52,11 @@ class RateStudy extends Component {
   };
 
   componentDidUpdate = (prevProps, prevState) => {
-    console.log("prevP", prevProps);
-    console.log("prevS", prevState);
     if (prevState === this.state) {
       this.setState({
         totalRating: this.props.study.currentRating / this.props.study.votes
       });
     }
-    let ti = document.getElementById("rate-study");
-    console.log(window.getComputedStyle(ti));
   };
 
   componentDidMount = () => {};
@@ -95,10 +90,9 @@ class RateStudy extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   let id = ownProps.currentElement;
-  console.log(id);
   return {
     study: state.study.find(study => {
-      return study.Id_soekerportal == id;
+      return study.Id_soekerportal === id;
     })
   };
 };

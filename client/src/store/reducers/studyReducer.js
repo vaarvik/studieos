@@ -1,6 +1,4 @@
 import data from "../../data/studium.json";
-import { timeout } from "q";
-import { stat } from "fs";
 
 const initState = data.rows;
 
@@ -9,7 +7,7 @@ const studyReducer = (state = initState, action) => {
     case "CLICKED":
       return state;
     case "STUDY_RATED":
-      const index = state.findIndex(one => action.id == one.Id_soekerportal);
+      const index = state.findIndex(one => action.id === one.Id_soekerportal);
       state[index].votes ? state[index].votes++ : (state[index].votes = 1);
       state[index].currentRating = action.currentRating;
       return state;
