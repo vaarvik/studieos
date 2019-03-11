@@ -17,29 +17,20 @@ class Search extends Component {
         name: "location",
         operating: false,
         placeholder: "Studiested",
-        tags: []
+        tags: ["Bergen"]
       },
       {
         name: "category",
         operating: false,
         placeholder: "Emne",
         tags: []
-      },
-      {
-        name: "school",
-        operating: false,
-        placeholder: "Skole",
-        tags: []
-      },
-      {
-        name: "degree",
-        operating: false,
-        placeholder: "Studiegrad",
-        tags: []
       }
     ],
     regMes: null,
+    locationTags: ["TITO"],
+    categoryTags: ["KAAA"],
     searchStudies: [],
+
     resetStatus: keyword => {
       const temp = this.state.dropDowns.map(dropDown => {
         if (dropDown.name === keyword) dropDown.operating = false;
@@ -48,7 +39,34 @@ class Search extends Component {
       this.setState({
         dropDowns: temp
       });
+      console.log("k3", this.state);
     }
+  };
+
+  createTagList = keyword => {
+    //make component
+    return (
+      <ul id={`${keyword}-tags"`}>
+        {this.state.dropDowns.map(dropDown => {
+          if (dropDown.name === keyword) {
+            dropDown.tags.map(tag => {
+              console.log(tag, "coming up");
+              return (
+                <li
+                  key={tag}
+                  onClick={e => {
+                    this.removeTag(e, keyword);
+                  }}
+                  className="searchTag"
+                >
+                  {tag}
+                </li>
+              );
+            });
+          }
+        })}
+      </ul>
+    );
   };
 
   displayRegMessage = valid => {
@@ -61,31 +79,60 @@ class Search extends Component {
   };
 
   addTag = (e, type) => {
-    this.state.dropDowns.map(dropDown => {
+    let tog = this.state.dropDowns.find(dropDown => dropDown.name === type);
+
+    const temp = this.state.dropDowns.map(dropDown => {
       if (dropDown.name === type) {
-        const tagExists = dropDown.tags.find(tag => {
-          if (tag.toLowerCase() === e.target.innerText.toLowerCase()) {
-            return true;
-          }
+        const tagExists = tog.tags.find(tag => {
+          if (tag === e.target.innerText) return true;
           return false;
         });
-        if (tagExists) return dropDown;
-        dropDown.tags.push(e.target.innerText);
+        if (tagExists) return null;
+        tog.tags.push(e.target.innerText);
       }
       return dropDown;
     });
+
+    console.log(temp);
+
+    this.setState({
+      dropDowns: temp
+    });
+
+    // const tagName = type + "Tags";
+    // let tags = this.state[tagName];
+    // const tagExists = tags.find(tag => {
+    //   if (tag === e.target.innerText) return true;
+    //   return false;
+    // });
+    // if (tagExists) return null;
+    // tags.push(e.target.innerText);
+    // this.setState({
+    //   [tagName]: tags
+    // });
   };
 
   removeTag = (e, type) => {
-    const newArray = this.state.dropDowns.map(dropDown => {
+    // const tagName = type + "Tags";
+    // let tags = this.state[tagName];
+
+    let tog = this.state.dropDowns.find(dropDown => dropDown.name === type);
+    const temp = this.state.dropDowns.map(dropDown => {
       if (dropDown.name === type) {
-        dropDown.tags = dropDown.tags.filter(tag => tag !== e.target.innerText);
+        return tog.tags.filter(tag => tag !== e.target.innerText);
       }
       return dropDown;
     });
+
+    console.log("deleted", temp);
+
     this.setState({
-      dropDowns: newArray
+      dropDowns: temp
     });
+
+    // this.setState({
+    //   [tagName]: tags.filter(tag => tag !== e.target.innerText)
+    // });
   };
 
   resetOtherDropdowns = type => {
@@ -136,75 +183,6 @@ class Search extends Component {
         return element;
   };
 
-  nestedMatch = (tags1, tags2, study) => {
-    if (tags2.length) {
-      //if there are both location tags and category tags return those that match both array's tags
-      let locationMatch = this.getTagMatch(study, study.location, tags1); //set study that matches current the location tags to the variable locationMatch
-      if (locationMatch) {
-        //check if there the current study is a match
-        return this.getTagMatch(study, study.school, tags2);
-      } else return null;
-    }
-    //return this if only tags1.length
-    return this.getTagMatch(study, study.location, tags1);
-  };
-
-  filterSearch = (study, tags1, tags2) => {
-    if (tags1.length) {
-      return this.nestedMatch(tags1, tags2, study);
-    } else if (tags2.length) {
-      return this.getTagMatch(study, study.school, tags2);
-    } else {
-      //return all studies if there are no tags
-      return study;
-    }
-  };
-
-  filterSearchNew = (otherTags1, otherTags2, study, tagList) => {
-    let isTags = false;
-    let singleStudy = null;
-    for (let i in tagList) {
-      if (tagList[i].tags.length) {
-        isTags = true;
-        let match = this.getTagMatch(
-          study,
-          study[tagList[i].type],
-          tagList[i].tags
-        );
-        if (!match) {
-          return null;
-        } else {
-          singleStudy = study;
-        }
-      }
-    }
-    if (isTags) return singleStudy;
-    else return study;
-    //return all studies if there is no tags
-
-    /* //THIS WORKS
-
-    if (otherTags1.tags.length && otherTags2.tags.length) {
-      //if there are both category tags and school tags return those that match both array's tags
-      let categoryMatch = this.getTagMatch(
-        study,
-        study[otherTags1.type],
-        otherTags1.tags
-      ); //set study that matches current the category tags to the variable categoryMatch
-      if (categoryMatch) {
-        //check if there the current study is a match
-        return this.getTagMatch(study, study[otherTags2.type], otherTags2.tags);
-      } else return null;
-    } else if (otherTags1.tags.length) {
-      return this.getTagMatch(study, study[otherTags1.type], otherTags1.tags);
-    } else if (otherTags2.tags.length) {
-      return this.getTagMatch(study, study[otherTags2.type], otherTags2.tags);
-    } else {
-      //return all studies if there is no tags
-      return study;
-    }*/
-  };
-
   toggleSearch = (e, type) => {
     this.validateInput(e, type);
     //validate with regex
@@ -213,40 +191,81 @@ class Search extends Component {
     //only show one dropdown menu at the time
 
     const typeProp = type.toString().toLowerCase();
+
     const lcTerm = e.target.value.toLowerCase();
-    let tagListArray = [];
 
-    this.state.dropDowns.map(dropDown => {
-      if (dropDown.name !== "name" && dropDown.name !== type) {
-        tagListArray.push({
-          tags: dropDown.tags,
-          type: dropDown.name
-        });
-      }
-    });
+    const { dropDowns } = this.state; //this.state.dropdowns.[1].tags
 
-    const otherTags1 = tagListArray[0];
-    const otherTags2 = tagListArray[1];
+    const locationTagsy = dropDowns[1].tags;
+    const categoryTagsy = dropDowns[2].tags;
 
     let searchMatches = this.props.studies.filter(study => {
       let lcStudyProp = study[typeProp].toLowerCase().indexOf(lcTerm); //set the study property to lowercase
 
-      //loop through the searchFieldsArray
       if (lcStudyProp !== -1) {
-        return this.filterSearchNew(
-          otherTags1,
-          otherTags2,
-          study,
-          tagListArray
-        );
+        //check if the input value contain letters in the same order as a the study property
+        if (type === "category") {
+          //check if the input field that is active is category
+          if (locationTagsy.length) {
+            //check if there is any array tags added
+            return this.getTagMatch(study, study.location, locationTagsy);
+          } else {
+            //return all if there is nothing in the array
+            return study;
+          }
+        } else if (type === "location") {
+          if (categoryTagsy.length) {
+            //check if there is any array tags added
+            return this.getTagMatch(study, study.category, categoryTagsy);
+          } else {
+            //return all if there is nothing in the array
+            return study;
+          }
+        } else {
+          //check if the input field that is active is not location
+          if (locationTagsy.length && categoryTagsy.length) {
+            //if there are both location tags and category tags return those that match both array's tags
+            let locationMatch = this.getTagMatch(
+              study,
+              study.location,
+              locationTagsy
+            ); //set study that matches current the location tags to the variable locationMatch
+            if (locationMatch) {
+              //check if there the current study is a match
+              return this.getTagMatch(study, study.category, categoryTagsy);
+            } else return null;
+          } else if (locationTagsy.length) {
+            return this.getTagMatch(study, study.location, locationTagsy);
+          } else if (categoryTagsy.length) {
+            return this.getTagMatch(study, study.category, categoryTagsy);
+          } else {
+            //return all studies if there is no tags
+            return study;
+          }
+        }
       }
+      //return null if there is no inputs
       return null;
     });
     this.sortArray(searchMatches, typeProp);
     this.setState({ searchStudies: searchMatches });
+    console.log(this.state.dropDowns);
   };
 
   render() {
+    const { dropDowns } = this.state; //this.state.dropdowns.[1].tags
+
+    const locationTagsy = dropDowns[1].tags;
+    const categoryTagsy = dropDowns[2].tags;
+
+    const locationTags = locationTagsy.length
+      ? this.createTagList("location")
+      : null;
+
+    const categoryTags = categoryTagsy.length
+      ? this.createTagList("category")
+      : null;
+
     const studySelected = this.props.pageId ? 3 : 8;
 
     return (
@@ -260,6 +279,9 @@ class Search extends Component {
             <h2>Søk blant studier</h2>
           </Link>
           {this.state.regMes}
+          {categoryTags}
+
+          {locationTags}
           {this.state.dropDowns.map(dropDown => {
             if (dropDown.name === "name") {
               return (
@@ -284,11 +306,7 @@ class Search extends Component {
                   placeholder={dropDown.placeholder}
                   operating={dropDown.operating}
                 />
-                <SearchTags
-                  keyword={dropDown.name}
-                  removeTag={this.removeTag}
-                  array={dropDown.tags}
-                />
+                {/* <SearchTags /> */}
               </React.Fragment>
             );
           })}
@@ -306,9 +324,7 @@ const mapStateToProps = (state, ownProps) => {
         id: single.Id_soekerportal,
         location: single.Undervisningssted,
         category: single.Utdomrkode,
-        school: single.Laerestednavn,
-        schoolCode: single.Laerestedkode,
-        degree: single.Varighet
+        schoolCode: single.Laerestedkode
       };
     }),
     pageId: ownProps.pageId
