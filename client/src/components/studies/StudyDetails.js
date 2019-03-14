@@ -4,8 +4,19 @@ import RateStudy from "./RateStudy";
 import StudyLocation from "./StudyLocation";
 
 class StudyDetails extends Component {
+  requirement = () => {
+    const { study } = this.props;
+    switch (study.Kompregelverk) {
+      case "GENS":
+        return "Generell studiekompentanse";
+      default:
+        return study.Kompregelverk;
+    }
+  };
+
   render() {
     const { study } = this.props;
+
     return (
       <div>
         <h3>{study.Studiumnavn}</h3>
@@ -17,6 +28,7 @@ class StudyDetails extends Component {
         </h4>
         <StudyLocation location={study.Undervisningssted} />
         <h6>Emne: {study.Utdomrkode}</h6>
+        <h7>Opptakskrav: {this.requirement()}</h7>
         <p>Studieplasser: {study.Antall_budsj_studieplasser}</p>
         <a href={study.Url} style={{ color: "blue" }}>
           {study.Url}

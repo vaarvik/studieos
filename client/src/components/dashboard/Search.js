@@ -1,9 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
-import SearchDropDown from "../search/SearchDropDown";
-import SeachStudyResults from "../search/SeachStudyResults";
-import SearchTags from "../search/SearchTags";
+import SearchFilter from "../search/SearchFilter";
 
 class Search extends Component {
   state = {
@@ -11,29 +9,41 @@ class Search extends Component {
       {
         name: "name",
         operating: false,
-        placeholder: "Søk etter studie"
+        placeholder: "Søk etter studie",
+        type: "results"
       },
       {
         name: "location",
+        type: "dropdown",
         operating: false,
         placeholder: "Studiested",
         tags: []
       },
       {
         name: "category",
+        type: "dropdown",
         operating: false,
         placeholder: "Emne",
         tags: []
       },
       {
         name: "school",
+        type: "dropdown",
         operating: false,
         placeholder: "Skole",
         tags: []
       },
       {
-        name: "degree",
+        name: "requirement",
+        type: "dropdown",
         operating: false,
+        placeholder: "Opptakskrav",
+        tags: []
+      },
+      {
+        name: "degree",
+        type: "checkbox",
+        operating: true,
         placeholder: "Studiegrad",
         tags: []
       }
@@ -64,13 +74,16 @@ class Search extends Component {
     this.state.dropDowns.map(dropDown => {
       if (dropDown.name === type) {
         const tagExists = dropDown.tags.find(tag => {
-          if (tag.toLowerCase() === e.target.innerText.toLowerCase()) {
+          if (
+            tag.toLowerCase() ===
+            e.target.attributes["value"].value.toLowerCase()
+          ) {
             return true;
           }
           return false;
         });
         if (tagExists) return dropDown;
-        dropDown.tags.push(e.target.innerText);
+        dropDown.tags.push(e.target.attributes["value"].value);
       }
       return dropDown;
     });
@@ -79,7 +92,9 @@ class Search extends Component {
   removeTag = (e, type) => {
     const newArray = this.state.dropDowns.map(dropDown => {
       if (dropDown.name === type) {
-        dropDown.tags = dropDown.tags.filter(tag => tag !== e.target.innerText);
+        dropDown.tags = dropDown.tags.filter(
+          tag => tag !== e.target.attributes["value"].value
+        );
       }
       return dropDown;
     });
@@ -149,18 +164,7 @@ class Search extends Component {
     return this.getTagMatch(study, study.location, tags1);
   };
 
-  filterSearch = (study, tags1, tags2) => {
-    if (tags1.length) {
-      return this.nestedMatch(tags1, tags2, study);
-    } else if (tags2.length) {
-      return this.getTagMatch(study, study.school, tags2);
-    } else {
-      //return all studies if there are no tags
-      return study;
-    }
-  };
-
-  filterSearchNew = (otherTags1, otherTags2, study, tagList) => {
+  filterSearch = (study, tagList) => {
     let isTags = false;
     let singleStudy = null;
     for (let i in tagList) {
@@ -180,29 +184,6 @@ class Search extends Component {
     }
     if (isTags) return singleStudy;
     else return study;
-    //return all studies if there is no tags
-
-    /* //THIS WORKS
-
-    if (otherTags1.tags.length && otherTags2.tags.length) {
-      //if there are both category tags and school tags return those that match both array's tags
-      let categoryMatch = this.getTagMatch(
-        study,
-        study[otherTags1.type],
-        otherTags1.tags
-      ); //set study that matches current the category tags to the variable categoryMatch
-      if (categoryMatch) {
-        //check if there the current study is a match
-        return this.getTagMatch(study, study[otherTags2.type], otherTags2.tags);
-      } else return null;
-    } else if (otherTags1.tags.length) {
-      return this.getTagMatch(study, study[otherTags1.type], otherTags1.tags);
-    } else if (otherTags2.tags.length) {
-      return this.getTagMatch(study, study[otherTags2.type], otherTags2.tags);
-    } else {
-      //return all studies if there is no tags
-      return study;
-    }*/
   };
 
   toggleSearch = (e, type) => {
@@ -225,20 +206,12 @@ class Search extends Component {
       }
     });
 
-    const otherTags1 = tagListArray[0];
-    const otherTags2 = tagListArray[1];
-
     let searchMatches = this.props.studies.filter(study => {
       let lcStudyProp = study[typeProp].toLowerCase().indexOf(lcTerm); //set the study property to lowercase
 
       //loop through the searchFieldsArray
       if (lcStudyProp !== -1) {
-        return this.filterSearchNew(
-          otherTags1,
-          otherTags2,
-          study,
-          tagListArray
-        );
+        return this.filterSearch(study, tagListArray);
       }
       return null;
     });
@@ -260,36 +233,21 @@ class Search extends Component {
             <h2>Søk blant studier</h2>
           </Link>
           {this.state.regMes}
-          {this.state.dropDowns.map(dropDown => {
-            if (dropDown.name === "name") {
-              return (
-                <SeachStudyResults
-                  searchStudies={this.state.searchStudies}
-                  keyword={dropDown.name}
-                  resetStatus={this.state.resetStatus}
-                  toggleSearch={this.toggleSearch}
-                  placeholder={dropDown.placeholder}
-                  operating={dropDown.operating}
-                />
-              );
-            }
+          {this.state.dropDowns.map(filter => {
             return (
-              <React.Fragment>
-                <SearchDropDown
-                  searchStudies={this.state.searchStudies}
-                  keyword={dropDown.name}
-                  addTag={this.addTag}
-                  resetStatus={this.state.resetStatus}
-                  toggleSearch={this.toggleSearch}
-                  placeholder={dropDown.placeholder}
-                  operating={dropDown.operating}
-                />
-                <SearchTags
-                  keyword={dropDown.name}
-                  removeTag={this.removeTag}
-                  array={dropDown.tags}
-                />
-              </React.Fragment>
+              <SearchFilter
+                searchStudies={this.state.searchStudies}
+                keyword={filter.name}
+                addTag={this.addTag}
+                resetStatus={this.state.resetStatus}
+                toggleSearch={this.toggleSearch}
+                placeholder={filter.placeholder}
+                operating={filter.operating}
+                removeTag={this.removeTag}
+                array={filter.tags}
+                tag={filter.type}
+                rawArray={this.props.studies}
+              />
             );
           })}
         </div>
@@ -308,6 +266,7 @@ const mapStateToProps = (state, ownProps) => {
         category: single.Utdomrkode,
         school: single.Laerestednavn,
         schoolCode: single.Laerestedkode,
+        requirement: single.Kompregelverk,
         degree: single.Varighet
       };
     }),

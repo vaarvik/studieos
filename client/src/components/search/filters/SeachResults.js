@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-const SeachStudyResults = props => {
+const SeachResults = props => {
   let refTarget = null;
 
   const {
@@ -50,4 +50,4 @@ const SeachStudyResults = props => {
   );
 };
 
-export default SeachStudyResults;
+export default SeachResults;

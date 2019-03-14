@@ -42,6 +42,7 @@ const SearchDropDown = props => {
             return (
               <li
                 key={study.id}
+                value={study[keyword]}
                 onClick={e => {
                   addTag(e, keyword);
                   refTarget.value = "";

@@ -9,6 +9,7 @@ const SearchTags = props => {
         return (
           <li
             key={key + i}
+            value={key}
             onClick={e => {
               removeTag(e, keyword);
             }}
